@@ -1,0 +1,6 @@
+projectKey=ingesoft2
+serverUrl=http://localhost:9000
+serverVersion=25.4.0.105899
+dashboardUrl=http://localhost:9000/dashboard?id=ingesoft2
+ceTaskId=64827206-32db-4ebb-9696-2a6324a96f96
+ceTaskUrl=http://localhost:9000/api/ce/task?id=64827206-32db-4ebb-9696-2a6324a96f96
