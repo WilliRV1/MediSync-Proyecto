@@ -1,47 +1,23 @@
-    // jest.config.js
-    module.exports = {
-        // Entorno de prueba que simula un navegador (DOM)
-        testEnvironment: 'jest-environment-jsdom',
-  
-        // Archivo que se ejecuta antes de cada suite de pruebas para configuración adicional
-        setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-  
-        // Cómo manejar diferentes tipos de archivos importados en los componentes
-        moduleNameMapper: {
-          // Mock para archivos CSS, SCSS, etc. -> Usa identity-obj-proxy
-          '\\.(css|less|sass|scss)$': 'identity-obj-proxy',
-          // Mock para archivos de imagen/fuentes (puedes ajustar las extensiones)
-          '\\.(gif|ttf|eot|svg|png)$': '<rootDir>/__mocks__/fileMock.js' // Necesitaremos crear este mock
-        },
-  
-        // Ignora transformaciones para node_modules excepto para módulos específicos si es necesario
-        transformIgnorePatterns: [
-           '/node_modules/(?!axios|react-icons|otras-librerias-esmodules/).+\\.js$'
-         ],
-  
-        // Indica a Jest que use Babel para transformar archivos JS/JSX
-        transform: {
-          '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
-        },
-  
-         // Opcional: Recolectar cobertura de estos archivos
-         collectCoverageFrom: [
-           'src/**/*.{js,jsx}', // Ajusta si usas TypeScript (ts, tsx)
-           '!src/main.jsx', // Excluir punto de entrada principal
-           '!src/App.jsx', // A menudo se excluye el App principal o se prueba con E2E
-           '!src/**/*.test.{js,jsx}', // Excluir archivos de prueba
-           '!src/vite-env.d.ts', // Excluir archivos de tipos si usas Vite+TS
-         ],
-         // Opcional: Dónde guardar el reporte de cobertura
-         coverageDirectory: 'coverage',
-         // Opcional: Mínimo de cobertura requerido (puedes ajustarlo)
-         // coverageThreshold: {
-         //   global: {
-         //     branches: 80,
-         //     functions: 80,
-         //     lines: 80,
-         //     statements: -10,
-         //   },
-         // },
-      };
-      
+// jest.config.js
+module.exports = {
+    testEnvironment: 'jest-environment-jsdom',
+    setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+    moduleNameMapper: {
+      '\\.(css|less|sass|scss)$': 'identity-obj-proxy',
+      '\\.(gif|ttf|eot|svg|png)$': '<rootDir>/__mocks__/fileMock.js'
+    },
+    transformIgnorePatterns: [
+       '/node_modules/(?!axios|react-icons|otras-librerias-esmodules/).+\\.js$'
+     ],
+    transform: {
+      '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
+    },
+    collectCoverageFrom: [
+       'src/**/*.{js,jsx}',
+       '!src/main.jsx',
+       '!src/App.jsx',
+       '!src/**/*.test.{js,jsx}',
+       '!src/vite-env.d.ts',
+     ],
+    coverageDirectory: 'coverage',
+};

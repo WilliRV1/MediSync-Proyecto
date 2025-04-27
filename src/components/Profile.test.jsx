@@ -11,17 +11,15 @@ jest.mock('react-router-dom', () => ({
   useNavigate: () => mockedNavigate,
 }));
 
-// Mock de window.confirm para la prueba de eliminar
-global.confirm = jest.fn(() => true); // Simula que el usuario siempre confirma
+global.confirm = jest.fn(() => true); 
 
-// Datos simulados del usuario para cargar en el perfil
 const mockUserData = {
   id: 'user123',
   nombre: 'Juan',
   apellido: 'Perez',
   correo: 'juan.perez@example.com',
   username: 'jperez',
-  fechaNacimiento: '1990-05-15T00:00:00.000Z', // Formato ISO
+  fechaNacimiento: '1990-05-15T00:00:00.000Z', 
   telefono: '123456789',
   direccion: 'Calle Falsa 123',
   rol: 'Paciente',
@@ -35,7 +33,7 @@ describe('Profile Component', () => {
     jest.spyOn(window, 'alert').mockImplementation(() => {});
     mockedNavigate.mockClear();
     global.confirm.mockClear();
-    global.fetch = jest.fn(); // Reset fetch mock
+    global.fetch = jest.fn(); 
 
     // Mock inicial para la carga del perfil (GET /api/profile/me)
     global.fetch.mockResolvedValueOnce({
@@ -78,7 +76,7 @@ describe('Profile Component', () => {
     fireEvent.click(editButton);
 
     // Verifica que aparezcan los inputs y los botones de guardar/cancelar
-    expect(screen.getByDisplayValue(mockUserData.nombre)).toBeInTheDocument(); // Ahora es un input con valor
+    expect(screen.getByDisplayValue(mockUserData.nombre)).toBeInTheDocument();
     expect(screen.getByDisplayValue(mockUserData.apellido)).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Guardar Cambios/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Cancelar/i })).toBeInTheDocument();
@@ -173,8 +171,7 @@ describe('Profile Component', () => {
       );
     });
 
-     // En un caso real, también verificaríamos la redirección (mockedNavigate).
-     // await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/login'));
+
   });
 
   test('calls delete API when "Eliminar Cuenta" is clicked after confirmation', async () => {
@@ -206,8 +203,6 @@ describe('Profile Component', () => {
        );
     });
 
-     // Verificar redirección
-     // await waitFor(() => expect(mockedNavigate).toHaveBeenCalledWith('/login'));
   });
 
 });

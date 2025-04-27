@@ -1,20 +1,18 @@
 import React from 'react';
-// Import necessary functions from React Testing Library
-// Añadimos fireEvent para simular interacciones
+
 import { render, screen, fireEvent } from '@testing-library/react';
-// Import the component to test
+
 import Login from './Login';
-// Import jest-dom matchers like toBeInTheDocument
+
 import '@testing-library/jest-dom';
-// We need to mock react-router-dom hooks like useNavigate
-import { MemoryRouter } from 'react-router-dom'; // Use MemoryRouter for components using react-router hooks
+
+import { MemoryRouter } from 'react-router-dom'; 
 
 
-// Describe block groups related tests for the Login component
 describe('Login Component', () => {
 
 
-  // Test case 1: Check if the component renders the main title
+
   test('renders login title', () => {
     render(
       <MemoryRouter>
@@ -25,7 +23,7 @@ describe('Login Component', () => {
     expect(titleElement).toBeInTheDocument();
   });
 
-  // Test case 2: Check if email/username input field is present
+
   test('renders identifier input field', () => {
     render(
       <MemoryRouter>
@@ -37,7 +35,7 @@ describe('Login Component', () => {
     expect(identifierInput).toHaveAttribute('type', 'text');
   });
 
-   // Test case 3: Check if password input field is present
+ 
    test('renders password input field', () => {
     render(
       <MemoryRouter>
@@ -46,10 +44,9 @@ describe('Login Component', () => {
     );
     const passwordInput = screen.getByPlaceholderText(/Contraseña/i);
     expect(passwordInput).toBeInTheDocument();
-    expect(passwordInput).toHaveAttribute('type', 'password'); // Initially it's password type
+    expect(passwordInput).toHaveAttribute('type', 'password'); 
   });
 
-  // Test case 4: Check if the login button is present
   test('renders login button', () => {
     render(
       <MemoryRouter>
@@ -60,7 +57,7 @@ describe('Login Component', () => {
     expect(loginButton).toBeInTheDocument();
   });
 
-  // --- NUEVAS PRUEBAS ---
+
 
   // Test case 5: Allows user to type in identifier field
   test('allows typing in identifier field', () => {
@@ -100,10 +97,8 @@ describe('Login Component', () => {
     // necesitamos una forma de seleccionarlo. Si el span tiene un 'role' o 'aria-label', úsalo.
     // Si no, podemos buscar el SVG directamente o añadir un 'data-testid' al span en Login.jsx
     // Asumiendo que el span es el único elemento con la clase 'toggle-password':
-    // NOTA: Buscar por clase no es la forma preferida por RTL, pero puede funcionar.
-    // Una mejor opción sería añadir data-testid="toggle-password-visibility" al span en Login.jsx
-    // y usar screen.getByTestId('toggle-password-visibility')
-    const toggleButton = passwordInput.nextSibling; // Intenta seleccionar el span hermano del input
+
+    const toggleButton = passwordInput.nextSibling;
 
     // Verifica que el input sea tipo 'password' inicialmente
     expect(passwordInput).toHaveAttribute('type', 'password');
@@ -121,6 +116,6 @@ describe('Login Component', () => {
     expect(passwordInput).toHaveAttribute('type', 'password');
   });
 
-  // --- FIN NUEVAS PRUEBAS ---
+  
 
 });
