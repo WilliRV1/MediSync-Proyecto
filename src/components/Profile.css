@@ -1,275 +1,208 @@
-
 .profile-wrapper {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    padding-top: 0px;
-    padding-bottom: 40px;
-    min-height: calc(150vh - 60px);
-    background-color: #f0f0f0;
-    height: 40em;              
-    overflow-y: auto;          
+    padding: 20px 10px;
+    min-height: 100vh;
+    background-color: #fafafa;
+    overflow-y: auto;
 }
 
-  .profile-container {
-    background-color: #ffffff;
-    padding: 30px 40px;
-    border-radius: 20px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+.profile-container {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     width: 100%;
-    max-width: 700px; /* Ancho máximo del contenedor del perfil */
+    max-width: 1000px;
     display: flex;
     flex-direction: column;
-    gap: 20px; /* Espacio entre elementos principales */
-  }
+    gap: 15px;
+}
 
-  .profile-container h1 {
+/* .profile-container h1 {
     text-align: center;
-    margin-bottom: 15px;
-    font-size: 28px;
-    font-weight: 700;
-    color: #333;
-  }
+    font-size: 24px;
+    font-weight: 600;
+    color: #222;
+} */
 
-  /* Mensajes de error y éxito */
-  .profile-message {
+.profile-message {
     text-align: center;
     padding: 10px;
     border-radius: 8px;
     margin-bottom: 15px;
     font-weight: 500;
-  }
+}
 
-  .profile-message.error {
+.profile-message.error {
     background-color: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
-  }
+}
 
-  .profile-message.success {
+.profile-message.success {
     background-color: #d4edda;
     color: #155724;
     border: 1px solid #c3e6cb;
-  }
+}
 
-  /* Estilos del formulario y campos */
-  .profile-form {
+.profile-main-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.profile-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 20px;
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    flex: 1 1 45%;
+    min-width: 300px;
+}
+
+.profile-field.full-width {
+    grid-column: 1 / -1;
+}
+
+.profile-footer-actions {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    flex: 1 1 45%;
+    min-width: 300px;
     display: flex;
     flex-direction: column;
-    gap: 15px; /* Espacio entre campos */
-  }
+    gap: 10px;
+}
 
-  .profile-field {
+.profile-field {
     display: flex;
-    flex-direction: column; /* Label arriba, input/span abajo */
+    flex-direction: column;
     gap: 5px;
-  }
+}
 
-  .profile-field label {
+.profile-field label {
     font-weight: 600;
     color: #555;
+    font-size: 13px;
+}
+
+.profile-field span {
     font-size: 14px;
-  }
-
-  .profile-field span {
-    font-size: 16px;
     color: #333;
-    padding: 10px 0; /* Espaciado vertical para alinear con inputs */
-    min-height: 46px; /* Altura mínima similar al input */
+    padding: 6px 0;
+    min-height: 36px;
     display: inline-block;
-    word-wrap: break-word; /* Para textos largos */
-  }
+    word-wrap: break-word;
+}
 
-  /* Estilo para campos no editables */
-  .profile-field.readonly span {
-      color: #666;
-      background-color: #f8f8f8;
-      padding: 10px;
-      border-radius: 8px;
-  }
+.profile-field.readonly span {
+    color: #666;
+    background-color: #f8f8f8;
+    padding: 10px;
+    border-radius: 8px;
+}
 
-
-  /* Reutiliza el estilo de input de index.css si existe y es adecuado */
-  /* Si no, define aquí un estilo específico para inputs del perfil */
-  .profile-form .input {
+.profile-form .input {
     width: 100%;
-    padding: 12px 15px;
-    font-size: 16px;
+    padding: 8px 12px;
+    font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 8px;
     transition: border-color 0.3s ease;
-  }
+}
 
-  .profile-form .input:focus {
-    border-color: #7f00ff; /* O el color primario de tu app */
+.profile-form .input:focus {
+    border-color: #7f00ff;
     outline: none;
-  }
+}
 
-  .profile-form .input:disabled {
-      background-color: #e9ecef;
-      cursor: not-allowed;
-  }
-
-
-  /* Contenedor de botones de acción del formulario */
-  .profile-actions {
-    display: flex;
-    gap: 15px; /* Espacio entre botones */
-    margin-top: 20px;
-    justify-content: center; /* Centra los botones */
-  }
-
-  /* Estilo base para botones del perfil */
-  .btn-profile {
-    padding: 12px 25px;
-    font-size: 16px;
-    border: none;
-    border-radius: 25px; /* Botones más redondeados */
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 500;
-  }
-
-  .btn-profile:disabled {
-    opacity: 0.6;
+.profile-form .input:disabled {
+    background-color: #e9ecef;
     cursor: not-allowed;
-  }
-
-  /* Botón primario (Guardar, Editar) */
-  .btn-profile.primary {
-    background-color: #000; /* Negro como en login */
-    color: white;
-  }
-
-  .btn-profile.primary:hover:not(:disabled) {
-    background-color: #333;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  /* Botón secundario (Cancelar, Cerrar Sesión) */
-  .btn-profile.secondary {
-    background-color: #f0f0f0;
-    color: #333;
-    border: 1px solid #ccc;
-  }
-
-  .btn-profile.secondary:hover:not(:disabled) {
-    background-color: #e0e0e0;
-  }
-
-  /* Botón de peligro (Eliminar Cuenta) */
-  .btn-profile.danger {
-    background-color: #dc3545;
-    color: white;
-  }
-
-  .btn-profile.danger:hover:not(:disabled) {
-    background-color: #c82333;
-    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.2);
-  }
-
-  /* Contenedor para botones de logout y eliminar */
-  .profile-footer-actions {
-      margin-top: 30px;
-      padding-top: 20px;
-      border-top: 1px solid #eee;
-      display: flex;
-      justify-content: space-between; /* Separa los botones */
-      align-items: center;
-  }
-
-
-
-  /* ... (todos los estilos anteriores de Profile.css) ... */
-
-/* NUEVO: Contenedor para el contenido principal (formulario y botones laterales) */
-.profile-main-content {
-    display: flex; /* Usa flexbox para poner elementos lado a lado */
-    gap: 30px; /* Espacio entre el formulario y los botones laterales */
-    align-items: flex-start; /* Alinea los items al inicio (útil si tienen alturas diferentes) */
-  }
-  
-  /* Ajuste para el formulario: que ocupe el espacio disponible */
-  .profile-form {
-    flex-grow: 1; 
-  }
-  
-  
-  /* Contenedor para botones de logout y eliminar */
-  .profile-footer-actions {
-      /* Quitamos el margen superior y el borde superior si ya no está al fondo */
-      /* margin-top: 30px; */
-      /* padding-top: 20px; */
-      /* border-top: 1px solid #eee; */
-  
-      /* Cambiamos la dirección a columna */
-      display: flex;
-      flex-direction: column; /* Botones uno debajo del otro */
-      gap: 15px; /* Espacio entre los botones */
-  
-      /* Alineación y ancho opcional */
-      align-items: stretch; /* Hace que los botones ocupen el ancho del contenedor */
-       width: 180px; /* Puedes ajustar este ancho */
-       /* justify-content: space-between; ya no aplica */
-       /* align-items: center; ya no aplica */
-       margin-top: 0; /* Ajusta si es necesario para alinear verticalmente */
-       padding-top: 10px; /* Pequeño espacio arriba */
-  }
-  
-  .profile-footer-actions .btn-profile {
-      width: 100%; /* Asegura que los botones ocupen todo el ancho del contenedor */
-      text-align: center; /* Centra el texto del botón */
-  }
-  
-  
-  /* ... (resto de estilos de .btn-profile, .btn-profile.secondary, .danger, etc.) ... */
-  
-  /* Asegúrate de que el contenedor principal aún tenga scroll si todo se vuelve muy alto */
-  .profile-wrapper {
-      /* ... otros estilos ... */
-      overflow-y: auto; /* Mantenemos esto */
-  }
-  
+}
 
 .profile-footer-actions {
-    display: flex;
-    flex-direction: column; /* Mantiene los botones/grupos apilados */
-    gap: 15px; /* Espacio entre botones o grupos de botones */
-    align-items: stretch; /* Estira los elementos hijos */
-    width: 180px; /* Ancho de la columna lateral (ajustable) */
-    padding-top: 0; /* Quitamos padding superior si no se necesita */
+    flex-direction: column;
+    gap: 15px;
+    align-items: stretch;
+    width: auto;
+    padding-top: 0;
+    margin-top: 0;
 }
 
-/* Estilos para el grupo de botones Editar/Guardar/Cancelar DENTRO de la columna lateral */
+.profile-footer-actions .btn-profile {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+}
+
 .profile-actions {
     display: flex;
-    flex-direction: column; /* Apila los botones (Guardar/Cancelar) verticalmente */
-    gap: 10px; /* Espacio entre Guardar y Cancelar */
-    width: 100%; /* Ocupa el ancho del contenedor padre (.profile-footer-actions) */
-    /* Quitamos estilos que ya no aplican aquí (como justify-content: center, margin-top) */
-    /* justify-content: center; */
-    /* margin-top: 20px; */
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
 }
-
 
 .profile-actions .btn-profile {
-     width: 100%;
-     box-sizing: border-box; /* Incluye padding y borde en el ancho total */
-}
-
-
-/* Estilos para los botones individuales de Cerrar Sesión y Eliminar */
-.profile-footer-actions .btn-profile.logout,
-.profile-footer-actions .btn-profile.danger {
-    width: 100%; /* Asegura que ocupen el ancho del contenedor */
+    width: 100%;
     box-sizing: border-box;
 }
 
-/* NUEVO: Estilo para el divisor (opcional) */
+.profile-footer-actions .btn-profile.logout,
+.profile-footer-actions .btn-profile.danger {
+    width: 100%;
+    box-sizing: border-box;
+}
+
 .button-divider {
     width: 100%;
     border: none;
-    border-top: 1px solid #eee; /* Línea sutil */
-    margin: 10px 0; /* Espacio vertical alrededor del divisor */
+    border-top: 1px solid #eee;
+    margin: 10px 0;
 }
 
+.btn-profile {
+    padding: 8px 14px;
+    font-size: 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.btn-profile.primary {
+    background-color: #111;
+    color: white;
+}
+
+.btn-profile.primary:hover {
+    background-color: #333;
+}
+
+.btn-profile.secondary {
+    background-color: #e5e5e5;
+    color: #333;
+}
+
+.btn-profile.secondary:hover {
+    background-color: #d4d4d4;
+}
+
+.btn-profile.danger {
+    background-color: #e53935;
+    color: white;
+}
+
+.btn-profile.danger:hover {
+    background-color: #c62828;
+}
