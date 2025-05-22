@@ -1,165 +1,92 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Profile flow', () => {
+test('Renderiza el perfil correctamente después del login', async ({ page }) => {
+  // Ir a login y autenticarse
+  await page.goto('http://localhost:5173/login');
+  await page.getByPlaceholder('Correo electrónico').fill('velascopripra@gmail.com');
+  await page.getByPlaceholder('Contraseña').fill('Autonoma12345.');
+  await page.getByRole('button', { name: /iniciar sesión/i }).click();
 
-  test('Verificación de perfil cargado correctamente', async ({ page }) => {
-    // Simulamos la respuesta de la API de perfil
-    await page.route('http://localhost:3001/api/profile/me', async route => {
-      const request = route.request();
-      if (request.method() === 'GET') {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({
-            success: true,
-            user: { 
-              id: 1, 
-              nombre: 'Juan Perez',
-              apellido: 'Perez',
-              email: 'juan.perez@example.com',
-              telefono: '123456789',
-              nombre_usuario: 'jperez',
-              tipo_usuario: 'Paciente',
-              estado: 'Activa'
-            }
-          }),
-        });
-      } else {
-        route.continue();
-      }
-    });
+  // Esperar que se redirija al perfil
+  await page.waitForURL('**/profile');
 
-    // Ir a la página de perfil
-    await page.goto('http://localhost:5173/profile'); 
+  // Verificar que el contenido del perfil esté presente
+  await expect(page.getByRole('heading', { name: 'Perfil de Usuario' })).toBeVisible();
+  await expect(page.getByText('Correo Electrónico:')).toBeVisible();
+  await expect(page.getByText('Nombre de Usuario:')).toBeVisible();
+});
 
-    // Verificamos que los datos del perfil se muestran correctamente
-    await expect(page.locator('text=Juan Perez')).toBeVisible();
-    await expect(page.locator('text=juan.perez@example.com')).toBeVisible();
-    await expect(page.locator('text=jperez')).toBeVisible();
-    await expect(page.locator('text=Paciente')).toBeVisible();
-    await expect(page.locator('text=Activa')).toBeVisible();
+
+test('Permite editar y guardar los datos del perfil', async ({ page }) => {
+  await page.goto('http://localhost:5173/login');
+  await page.getByPlaceholder('Correo electrónico').fill('velascopripra@gmail.com');
+  await page.getByPlaceholder('Contraseña').fill('Autonoma12345.');
+  await page.getByRole('button', { name: /iniciar sesión/i }).click();
+  await page.waitForURL('**/profile');
+
+  // Click en "Editar Perfil"
+  await page.getByRole('button', { name: 'Editar Perfil' }).click();
+
+  // Modificar campos
+  await page.getByLabel('Nombre:').fill('Juan modificado');
+  await page.getByLabel('Teléfono:').fill('123456789');
+  await page.getByLabel('Dirección:').fill('Dirección de prueba');
+
+  // Guardar cambios
+  await page.getByRole('button', { name: 'Guardar Cambios' }).click();
+
+  // Verificar mensaje de éxito
+  await expect(page.getByText('Perfil actualizado exitosamente.')).toBeVisible();
+
+  // Verificar que los datos estén actualizados
+  await expect(page.locator('span', { hasText: 'Juan modificado' })).toBeVisible();
+});
+
+test('Cierra sesión correctamente y redirige al login', async ({ page }) => {
+  await page.goto('http://localhost:5173/login');
+  await page.getByPlaceholder('Correo electrónico').fill('velascopripra@gmail.com');
+  await page.getByPlaceholder('Contraseña').fill('Autonoma12345.');
+  await page.getByRole('button', { name: /iniciar sesión/i }).click();
+  await page.waitForURL('**/profile');
+
+  await page.getByRole('button', { name: 'Cerrar Sesión' }).click();
+
+  // Esperar redirección
+  await page.waitForURL('**/login');
+
+  // Verificar que esté en el login
+  await expect(page).toHaveURL('http://localhost:5173/login');
+});
+
+
+test('Eliminar cuenta redirige al login y muestra mensaje de éxito', async ({ page }) => {
+  // Login
+  await page.goto('http://localhost:5173/login');
+  await page.getByPlaceholder('Correo electrónico').fill('prueba@gmail.com');
+  await page.getByPlaceholder('Contraseña').fill('123456');
+  await page.getByRole('button', { name: /iniciar sesión/i }).click();
+  await page.waitForURL('**/profile');
+
+  // Mock confirm
+  await page.evaluate(() => {
+    window.confirm = () => true;
   });
 
-  test('Edición del perfil', async ({ page }) => {
-    // Simulamos la respuesta de la API para obtener los datos del perfil
-    await page.route('http://localhost:3001/api/profile/me', async route => {
-      const request = route.request();
-      if (request.method() === 'GET') {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({
-            success: true,
-            user: { 
-              id: 1, 
-              nombre: 'Juan Perez',
-              apellido: 'Perez',
-              email: 'juan.perez@example.com',
-              telefono: '123456789',
-              nombre_usuario: 'jperez',
-              tipo_usuario: 'Paciente',
-              estado: 'Activa'
-            }
-          }),
-        });
-      } else {
-        route.continue();
-      }
-    });
+  // Verifica que el botón de eliminar exista y esté visible
+  const eliminarBtn = page.getByRole('button', { name: 'Eliminar Cuenta' });
+  await expect(eliminarBtn).toBeVisible();
 
-    // Ir a la página de perfil
-    await page.goto('http://localhost:5173/profile'); 
+  // Clic en eliminar cuenta
+  await eliminarBtn.click();
 
-    // Hacer clic en el botón de "Editar Perfil"
-    await page.getByRole('button', { name: 'Editar Perfil' }).click();
+  // Esperar redirección al login
+  await page.waitForURL('**/login', { timeout: 10000 });
 
-    // Rellenar los campos de edición
-    await page.getByPlaceholder('Nombre').fill('Juan Modificado');
-    await page.getByPlaceholder('Teléfono').fill('987654321');
+  // Revisar localStorage para mensaje de éxito
+  const successMessage = await page.evaluate(() => localStorage.getItem('successMessage'));
+  console.log('Mensaje de éxito en localStorage:', successMessage);
 
-    // Simular el guardado de cambios (llamada de API PUT)
-    await page.route('http://localhost:3001/api/profile/me', async route => {
-      const request = route.request();
-      if (request.method() === 'PUT') {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({
-            success: true,
-            user: { 
-              id: 1, 
-              nombre: 'Juan Modificado',
-              apellido: 'Perez',
-              email: 'juan.perez@example.com',
-              telefono: '987654321',
-              nombre_usuario: 'jperez',
-              tipo_usuario: 'Paciente',
-              estado: 'Activa'
-            }
-          }),
-        });
-      } else {
-        route.continue();
-      }
-    });
+  expect(successMessage).toBe('Cuenta eliminada');
 
-    // Hacer clic en el botón de "Guardar Cambios"
-    await page.getByRole('button', { name: 'Guardar Cambios' }).click();
-
-    // Verificar que los datos actualizados se muestran en el perfil
-    await expect(page.locator('text=Juan Modificado')).toBeVisible();
-    await expect(page.locator('text=987654321')).toBeVisible();
-  });
-
-  test('Cierre de sesión desde el perfil', async ({ page }) => {
-    // Simulamos la respuesta de la API de perfil
-    await page.route('http://localhost:3001/api/profile/me', async route => {
-      const request = route.request();
-      if (request.method() === 'GET') {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({
-            success: true,
-            user: { 
-              id: 1, 
-              nombre: 'Juan Perez',
-              apellido: 'Perez',
-              email: 'juan.perez@example.com',
-              telefono: '123456789',
-              nombre_usuario: 'jperez',
-              tipo_usuario: 'Paciente',
-              estado: 'Activa'
-            }
-          }),
-        });
-      } else {
-        route.continue();
-      }
-    });
-
-    // Ir a la página de perfil
-    await page.goto('http://localhost:5173/profile');
-
-    // Simulamos la respuesta de la API de cierre de sesión
-    await page.route('http://localhost:3001/api/logout', async route => {
-      const request = route.request();
-      if (request.method() === 'POST') {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({ success: true }),
-        });
-      } else {
-        route.continue();
-      }
-    });
-
-    // Hacer clic en el botón de "Cerrar sesión"
-    await page.getByRole('button', { name: 'Cerrar sesión' }).click();
-
-    // Verificar que la URL cambie a la página de login
-    await expect(page).toHaveURL('http://localhost:5173/login');
-  });
-
+  
 });

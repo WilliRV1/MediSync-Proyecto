@@ -14,7 +14,7 @@ export default function Profile() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // --- (useEffect, handleChange, handleUpdate, handleDelete, handleLogout - sin cambios) ---
+
   useEffect(() => {
     const fetchProfile = async () => {
       setError(''); setSuccess(''); setLoading(true);
@@ -49,7 +49,7 @@ export default function Profile() {
   };
 
   const handleUpdate = async (event) => {
-    // Importante: Prevenir el comportamiento por defecto si el botón submit está fuera del form
+    
     if (event) event.preventDefault();
     setError(''); setSuccess(''); setLoading(true);
     const updatePayload = {
@@ -80,7 +80,10 @@ export default function Profile() {
           method: 'DELETE', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
         });
         const data = await response.json();
-        if (response.ok && data.success) { alert('Cuenta eliminada.'); navigate('/login'); }
+        if (response.ok && data.success) {
+          localStorage.setItem('successMessage', 'Cuenta eliminada');
+          navigate('/login');
+        }
         else { throw new Error(data.message || `Error ${response.status}`); }
       } catch (err) { console.error('Error al eliminar cuenta:', err); setError(`Error al eliminar: ${err.message}`);
       } finally { setLoading(false); }
@@ -120,8 +123,8 @@ export default function Profile() {
           <form onSubmit={handleUpdate} className="profile-form" id="profile-edit-form">
             {/* Campos del perfil (igual que antes) */}
             <div className="profile-field">
-              <label>Nombre:</label>
-              {isEditing ? ( <input type="text" name="nombre" value={formData.nombre} onChange={handleChange} disabled={loading} className="input" /> ) : ( <span>{userData.nombre || 'No especificado'}</span> )}
+            <label htmlFor="nombre">Nombre:</label>
+              {isEditing ? ( <input id="nombre" type="text" name="nombre" value={formData.nombre} onChange={handleChange} disabled={loading} className="input" /> ) : ( <span>{userData.nombre || 'No especificado'}</span> )}
             </div>
             {/* ... otros campos ... */}
              <div className="profile-field">
@@ -135,12 +138,13 @@ export default function Profile() {
                 {isEditing ? ( <input type="date" name="fechaNacimiento" value={formData.fechaNacimiento} onChange={handleChange} disabled={loading} className="input"/> ) : ( <span>{formData.fechaNacimiento || 'No especificada'}</span> )}
              </div>
              <div className="profile-field">
-               <label>Teléfono:</label>
-               {isEditing ? ( <input type="tel" name="telefono" value={formData.telefono} onChange={handleChange} disabled={loading} className="input"/> ) : ( <span>{userData.telefono || 'No especificado'}</span> )}
+             <label htmlFor="telefono">Teléfono:</label>
+
+               {isEditing ? ( <input id="telefono" type="tel" name="telefono" value={formData.telefono} onChange={handleChange} disabled={loading} className="input"/> ) : ( <span>{userData.telefono || 'No especificado'}</span> )}
              </div>
              <div className="profile-field">
-               <label>Dirección:</label>
-               {isEditing ? ( <input type="text" name="direccion" value={formData.direccion} onChange={handleChange} disabled={loading} className="input"/> ) : ( <span>{userData.direccion || 'No especificada'}</span> )}
+             <label htmlFor="direccion">Dirección:</label>
+               {isEditing ? ( <input id="direccion" type="text" name="direccion" value={formData.direccion} onChange={handleChange} disabled={loading} className="input"/> ) : ( <span>{userData.direccion || 'No especificada'}</span> )}
              </div>
              <div className="profile-field readonly"><label>Rol:</label><span>{userData.rol}</span></div>
              <div className="profile-field readonly"><label>Estado Cuenta:</label><span>{userData.estadoCuenta}</span></div>
