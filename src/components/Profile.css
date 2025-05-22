@@ -1,17 +1,15 @@
-/* Profile.css - Estilos para el componente de perfil */
 
-/* Contenedor principal similar a login/register pero adaptado */
 .profile-wrapper {
     display: flex;
-    justify-content: center; /* Centra horizontalmente */
-    align-items: flex-start; /* Alinea arriba */
-    padding-top: 80px; /* Espacio desde el navbar (ajusta según altura del navbar) */
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 0px;
     padding-bottom: 40px;
-    min-height: calc(100vh - 60px); /* Altura mínima menos el navbar */
-    background-color: #f0f0f0; /* Fondo general */
-    /* La siguiente línea es la que añade el scroll vertical cuando es necesario */
-    overflow-y: auto; /* Permite scroll si el contenido es largo */
-  }
+    min-height: calc(150vh - 60px);
+    background-color: #f0f0f0;
+    height: 40em;              
+    overflow-y: auto;          
+}
 
   .profile-container {
     background-color: #ffffff;
@@ -180,9 +178,7 @@
       align-items: center;
   }
 
-  .profile-footer-actions .btn-profile.logout {
-      /* Estilos específicos si se necesitan */
-  }
+
 
   /* ... (todos los estilos anteriores de Profile.css) ... */
 
@@ -195,10 +191,7 @@
   
   /* Ajuste para el formulario: que ocupe el espacio disponible */
   .profile-form {
-    /*display: flex; ya lo tenía */
-    /*flex-direction: column; ya lo tenía */
-    /*gap: 15px; ya lo tenía */
-    flex-grow: 1; /* Hace que el formulario ocupe el espacio principal */
+    flex-grow: 1; 
   }
   
   
@@ -237,14 +230,7 @@
       overflow-y: auto; /* Mantenemos esto */
   }
   
-  /* Puede que necesites ajustar el max-width del profile-container si ahora es más ancho */
-  .profile-container {
-      /* ... otros estilos ... */
-      max-width: 900px; /* Incrementa si es necesario para acomodar el layout */
-  }
-  /* ... (estilos anteriores de Profile.css, incluyendo .profile-wrapper, .profile-container, .profile-main-content, .profile-form) ... */
 
-/* Estilos para el contenedor de TODOS los botones en la columna lateral */
 .profile-footer-actions {
     display: flex;
     flex-direction: column; /* Mantiene los botones/grupos apilados */
@@ -265,7 +251,7 @@
     /* margin-top: 20px; */
 }
 
-/* Asegura que los botones dentro de .profile-actions también ocupen el ancho */
+
 .profile-actions .btn-profile {
      width: 100%;
      box-sizing: border-box; /* Incluye padding y borde en el ancho total */
@@ -287,5 +273,3 @@
     margin: 10px 0; /* Espacio vertical alrededor del divisor */
 }
 
-
-/* ... (resto de estilos: .btn-profile, .primary, .secondary, .danger, etc.) ... */
