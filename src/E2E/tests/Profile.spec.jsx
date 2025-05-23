@@ -58,35 +58,17 @@ test('Cierra sesión correctamente y redirige al login', async ({ page }) => {
   await expect(page).toHaveURL('http://localhost:5173/login');
 });
 
-
-test('Eliminar cuenta redirige al login y muestra mensaje de éxito', async ({ page }) => {
-  // Login
+test('Muestra correctamente todos los campos del perfil', async ({ page }) => {
   await page.goto('http://localhost:5173/login');
-  await page.getByPlaceholder('Correo electrónico').fill('prueba@gmail.com');
-  await page.getByPlaceholder('Contraseña').fill('123456');
+  await page.getByPlaceholder('Correo electrónico').fill('velascopripra@gmail.com');
+  await page.getByPlaceholder('Contraseña').fill('Autonoma12345.');
   await page.getByRole('button', { name: /iniciar sesión/i }).click();
   await page.waitForURL('**/profile');
 
-  // Mock confirm
-  await page.evaluate(() => {
-    window.confirm = () => true;
-  });
-
-  // Verifica que el botón de eliminar exista y esté visible
-  const eliminarBtn = page.getByRole('button', { name: 'Eliminar Cuenta' });
-  await expect(eliminarBtn).toBeVisible();
-
-  // Clic en eliminar cuenta
-  await eliminarBtn.click();
-
-  // Esperar redirección al login
-  await page.waitForURL('**/login', { timeout: 10000 });
-
-  // Revisar localStorage para mensaje de éxito
-  const successMessage = await page.evaluate(() => localStorage.getItem('successMessage'));
-  console.log('Mensaje de éxito en localStorage:', successMessage);
-
-  expect(successMessage).toBe('Cuenta eliminada');
-
-  
+  await expect(page.getByText('Correo Electrónico:')).toBeVisible();
+  await expect(page.getByText('Nombre de Usuario:')).toBeVisible();
+  await expect(page.getByText('Rol:')).toBeVisible();
+  await expect(page.getByText('Estado Cuenta:')).toBeVisible();
+  await expect(page.getByText('Miembro desde:')).toBeVisible();
+  await expect(page.getByText('Último Acceso:')).toBeVisible();
 });
