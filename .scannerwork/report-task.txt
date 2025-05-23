@@ -1,6 +1,6 @@
-projectKey=ingesoft2
+projectKey=MediSync-Proyecto
 serverUrl=http://localhost:9000
-serverVersion=25.4.0.105899
-dashboardUrl=http://localhost:9000/dashboard?id=ingesoft2
-ceTaskId=64827206-32db-4ebb-9696-2a6324a96f96
-ceTaskUrl=http://localhost:9000/api/ce/task?id=64827206-32db-4ebb-9696-2a6324a96f96
+serverVersion=25.5.0.107428
+dashboardUrl=http://localhost:9000/dashboard?id=MediSync-Proyecto
+ceTaskId=98712ac4-41c1-464d-a490-60e5412b90b1
+ceTaskUrl=http://localhost:9000/api/ce/task?id=98712ac4-41c1-464d-a490-60e5412b90b1
