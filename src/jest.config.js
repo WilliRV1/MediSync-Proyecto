@@ -23,6 +23,9 @@
         transform: {
           '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
         },
+
+        // Ignora los tests E2E dentro de src/E2E
+        testPathIgnorePatterns: ['/node_modules/', '/src/E2E/'],
   
          // Opcional: Recolectar cobertura de estos archivos
          collectCoverageFrom: [

@@ -12,6 +12,7 @@ module.exports = {
     transform: {
       '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
     },
+    testPathIgnorePatterns: ['/node_modules/', '/src/E2E/'],
     collectCoverageFrom: [
        'src/**/*.{js,jsx}',
        '!src/main.jsx',

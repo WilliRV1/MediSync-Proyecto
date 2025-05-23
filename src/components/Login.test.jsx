@@ -1,3 +1,10 @@
+const mockNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
+
 import React from 'react';
 
 import { render, screen, fireEvent } from '@testing-library/react';
@@ -6,7 +13,7 @@ import Login from './Login';
 
 import '@testing-library/jest-dom';
 
-import { MemoryRouter } from 'react-router-dom'; 
+import { MemoryRouter, useNavigate } from 'react-router-dom'; 
 
 
 describe('Login Component', () => {
@@ -119,3 +126,44 @@ describe('Login Component', () => {
   
 
 });
+
+
+  test('muestra mensaje de éxito si existe en localStorage', () => {
+    localStorage.setItem('successMessage', 'Bienvenido de nuevo');
+    render(
+      <MemoryRouter>
+        <Login />
+      </MemoryRouter>
+    );
+    expect(screen.getByText('Bienvenido de nuevo')).toBeInTheDocument();
+    localStorage.removeItem('successMessage');
+  });
+
+  test('realiza login exitoso y navega al perfil', async () => {
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({ success: true }),
+      })
+    );
+
+    render(
+      <MemoryRouter>
+        <Login />
+      </MemoryRouter>
+    );
+
+    fireEvent.change(screen.getByPlaceholderText(/correo electrónico/i), {
+      target: { value: 'usuario@correo.com' },
+    });
+    fireEvent.change(screen.getByPlaceholderText(/contraseña/i), {
+      target: { value: '123456' },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /iniciar sesión/i }));
+
+    await screen.findByText('Entrando...', {}, { timeout: 2000 });
+
+    expect(global.fetch).toHaveBeenCalledWith("http://localhost:3001/api/login", expect.any(Object));
+    expect(mockNavigate).toHaveBeenCalledWith('/profile');
+  });

@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">82.35% </span>
+                <span class="strong">82.85% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>56/68</span>
+                <span class='fraction'>58/70</span>
             </div>
         
             
@@ -256,7 +256,11 @@
 <a name='L191'></a><a href='#L191'>191</a>
 <a name='L192'></a><a href='#L192'>192</a>
 <a name='L193'></a><a href='#L193'>193</a>
-<a name='L194'></a><a href='#L194'>194</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L194'></a><a href='#L194'>194</a>
+<a name='L195'></a><a href='#L195'>195</a>
+<a name='L196'></a><a href='#L196'>196</a>
+<a name='L197'></a><a href='#L197'>197</a>
+<a name='L198'></a><a href='#L198'>198</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -339,6 +343,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -364,6 +371,7 @@
 <span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -465,7 +473,7 @@ export default function Profile() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 &nbsp;
-  // --- (useEffect, handleChange, handleUpdate, handleDelete, handleLogout - sin cambios) ---
+&nbsp;
   useEffect(() =&gt; {
     const fetchProfile = async () =&gt; {
       setError(''); setSuccess(''); setLoading(true);
@@ -500,7 +508,7 @@ export default function Profile() {
   };
 &nbsp;
   const handleUpdate = async (event) =&gt; {
-    // Importante: Prevenir el comportamiento por defecto si el botón submit está fuera del form
+    
     <span class="missing-if-branch" title="else path not taken" >E</span>if (event) event.preventDefault();
     setError(''); setSuccess(''); setLoading(true);
     const updatePayload = {
@@ -531,7 +539,10 @@ export default function Profile() {
           method: 'DELETE', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
         });
         const data = await response.json();
-        if (response.ok &amp;&amp; data.success) { alert('Cuenta eliminada.'); navigate('/login'); }
+        if (response.ok &amp;&amp; data.success) {
+          localStorage.setItem('successMessage', 'Cuenta eliminada');
+          navigate('/login');
+        }
         else <span class="missing-if-branch" title="else path not taken" >E</span>{ <span class="cstat-no" title="statement not covered" >throw new Error(data.message || `Error ${response.status}`); </span>}
       } catch (err) { <span class="cstat-no" title="statement not covered" >console.error('Error al eliminar cuenta:', err); <span class="cstat-no" title="statement not covered" ></span>setError(`Error al eliminar: ${err.message}`);</span>
       } finally { setLoading(false); }
@@ -571,8 +582,8 @@ export default function Profile() {
           &lt;form onSubmit={handleUpdate} className="profile-form" id="profile-edit-form"&gt;
             {/* Campos del perfil (igual que antes) */}
             &lt;div className="profile-field"&gt;
-              &lt;label&gt;Nombre:&lt;/label&gt;
-              {isEditing ? ( &lt;input type="text" name="nombre" value={formData.nombre} onChange={handleChange} disabled={loading} className="input" /&gt; ) : ( &lt;span&gt;{userData.nombre || <span class="branch-1 cbranch-no" title="branch not covered" >'No especificado'}</span>&lt;/span&gt; )}
+            &lt;label htmlFor="nombre"&gt;Nombre:&lt;/label&gt;
+              {isEditing ? ( &lt;input id="nombre" type="text" name="nombre" value={formData.nombre} onChange={handleChange} disabled={loading} className="input" /&gt; ) : ( &lt;span&gt;{userData.nombre || <span class="branch-1 cbranch-no" title="branch not covered" >'No especificado'}</span>&lt;/span&gt; )}
             &lt;/div&gt;
             {/* ... otros campos ... */}
              &lt;div className="profile-field"&gt;
@@ -586,12 +597,13 @@ export default function Profile() {
                 {isEditing ? ( &lt;input type="date" name="fechaNacimiento" value={formData.fechaNacimiento} onChange={handleChange} disabled={loading} className="input"/&gt; ) : ( &lt;span&gt;{formData.fechaNacimiento || <span class="branch-1 cbranch-no" title="branch not covered" >'No especificada'}</span>&lt;/span&gt; )}
              &lt;/div&gt;
              &lt;div className="profile-field"&gt;
-               &lt;label&gt;Teléfono:&lt;/label&gt;
-               {isEditing ? ( &lt;input type="tel" name="telefono" value={formData.telefono} onChange={handleChange} disabled={loading} className="input"/&gt; ) : ( &lt;span&gt;{userData.telefono || <span class="branch-1 cbranch-no" title="branch not covered" >'No especificado'}</span>&lt;/span&gt; )}
+             &lt;label htmlFor="telefono"&gt;Teléfono:&lt;/label&gt;
+&nbsp;
+               {isEditing ? ( &lt;input id="telefono" type="tel" name="telefono" value={formData.telefono} onChange={handleChange} disabled={loading} className="input"/&gt; ) : ( &lt;span&gt;{userData.telefono || <span class="branch-1 cbranch-no" title="branch not covered" >'No especificado'}</span>&lt;/span&gt; )}
              &lt;/div&gt;
              &lt;div className="profile-field"&gt;
-               &lt;label&gt;Dirección:&lt;/label&gt;
-               {isEditing ? ( &lt;input type="text" name="direccion" value={formData.direccion} onChange={handleChange} disabled={loading} className="input"/&gt; ) : ( &lt;span&gt;{userData.direccion || <span class="branch-1 cbranch-no" title="branch not covered" >'No especificada'}</span>&lt;/span&gt; )}
+             &lt;label htmlFor="direccion"&gt;Dirección:&lt;/label&gt;
+               {isEditing ? ( &lt;input id="direccion" type="text" name="direccion" value={formData.direccion} onChange={handleChange} disabled={loading} className="input"/&gt; ) : ( &lt;span&gt;{userData.direccion || <span class="branch-1 cbranch-no" title="branch not covered" >'No especificada'}</span>&lt;/span&gt; )}
              &lt;/div&gt;
              &lt;div className="profile-field readonly"&gt;&lt;label&gt;Rol:&lt;/label&gt;&lt;span&gt;{userData.rol}&lt;/span&gt;&lt;/div&gt;
              &lt;div className="profile-field readonly"&gt;&lt;label&gt;Estado Cuenta:&lt;/label&gt;&lt;span&gt;{userData.estadoCuenta}&lt;/span&gt;&lt;/div&gt;
@@ -649,7 +661,7 @@ export default function Profile() {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-04-26T23:30:05.440Z
+                at 2025-05-23T01:30:17.235Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
