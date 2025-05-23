@@ -1,20 +1,15 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { BrowserRouter } from 'react-router-dom'; // Necesario porque Register usa useNavigate
+import { BrowserRouter } from 'react-router-dom';
 import Register from './Register';
 
-// Mock de useNavigate ya que no podemos navegar en el entorno de prueba
-// Si necesitas probar la navegación real, se requiere una configuración más compleja.
 const mockedNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'), // usa la implementación real para todo lo demás
+  ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockedNavigate,
 }));
 
-// Mock global para la función fetch (simplificado)
-// Esto evita errores al intentar hacer llamadas reales durante la prueba.
-// Para pruebas más robustas, se usarían librerías como 'jest-fetch-mock'.
 global.fetch = jest.fn(() =>
   Promise.resolve({
     ok: true,
@@ -22,9 +17,7 @@ global.fetch = jest.fn(() =>
   })
 );
 
-
 describe('Register Component', () => {
-  // Limpia los mocks antes de cada prueba
   beforeEach(() => {
     mockedNavigate.mockClear();
     global.fetch.mockClear();
@@ -37,14 +30,13 @@ describe('Register Component', () => {
       </BrowserRouter>
     );
 
-    // Verifica que los campos principales estén presentes
-    expect(screen.getByPlaceholderText(/Nombre completo/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/Nombre de usuario/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/Correo electrónico/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/^Contraseña/i)).toBeInTheDocument(); // Usamos ^ para inicio de línea
-    expect(screen.getByPlaceholderText(/Confirmar contraseña/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/Pregunta de seguridad/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/Respuesta de seguridad/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Nombre completo')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Nombre de usuario')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Correo electrónico')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Contraseña (mín. 6 caracteres)')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Confirmar contraseña')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Pregunta de seguridad (ej: nombre de mascota)')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Respuesta de seguridad')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Crear cuenta/i })).toBeInTheDocument();
   });
 
@@ -55,10 +47,10 @@ describe('Register Component', () => {
       </BrowserRouter>
     );
 
-    const nameInput = screen.getByPlaceholderText(/Nombre completo/i);
-    const usernameInput = screen.getByPlaceholderText(/Nombre de usuario/i);
-    const emailInput = screen.getByPlaceholderText(/Correo electrónico/i);
-    const passwordInput = screen.getByPlaceholderText(/^Contraseña/i);
+    const nameInput = screen.getByPlaceholderText('Nombre completo');
+    const usernameInput = screen.getByPlaceholderText('Nombre de usuario');
+    const emailInput = screen.getByPlaceholderText('Correo electrónico');
+    const passwordInput = screen.getByPlaceholderText('Contraseña (mín. 6 caracteres)');
 
     fireEvent.change(nameInput, { target: { value: 'Test User' } });
     fireEvent.change(usernameInput, { target: { value: 'testuser' } });
@@ -71,11 +63,6 @@ describe('Register Component', () => {
     expect(passwordInput).toHaveValue('password123');
   });
 
-  
-
- 
-
-  // Prueba básica de envío (asumiendo que fetch es mockeado a éxito)
   test('calls fetch on successful submit with valid data', async () => {
     render(
       <BrowserRouter>
@@ -83,26 +70,22 @@ describe('Register Component', () => {
       </BrowserRouter>
     );
 
-     // Llenar todos los campos válidamente
-    fireEvent.change(screen.getByPlaceholderText(/Nombre completo/i), { target: { value: 'Test User' } });
-    fireEvent.change(screen.getByPlaceholderText(/Nombre de usuario/i), { target: { value: 'testuser' } });
-    fireEvent.change(screen.getByPlaceholderText(/Correo electrónico/i), { target: { value: 'test@example.com' } });
-    fireEvent.change(screen.getByPlaceholderText(/^Contraseña/i), { target: { value: 'password123' } });
-    fireEvent.change(screen.getByPlaceholderText(/Confirmar contraseña/i), { target: { value: 'password123' } });
-    fireEvent.change(screen.getByPlaceholderText(/Pregunta de seguridad/i), { target: { value: 'Pet name?' } });
-    fireEvent.change(screen.getByPlaceholderText(/Respuesta de seguridad/i), { target: { value: 'Fido' } });
-
+    fireEvent.change(screen.getByPlaceholderText('Nombre completo'), { target: { value: 'Test User' } });
+    fireEvent.change(screen.getByPlaceholderText('Nombre de usuario'), { target: { value: 'testuser' } });
+    fireEvent.change(screen.getByPlaceholderText('Correo electrónico'), { target: { value: 'test@example.com' } });
+    fireEvent.change(screen.getByPlaceholderText('Contraseña (mín. 6 caracteres)'), { target: { value: 'password123' } });
+    fireEvent.change(screen.getByPlaceholderText('Confirmar contraseña'), { target: { value: 'password123' } });
+    fireEvent.change(screen.getByPlaceholderText('Pregunta de seguridad (ej: nombre de mascota)'), { target: { value: 'Pet name?' } });
+    fireEvent.change(screen.getByPlaceholderText('Respuesta de seguridad'), { target: { value: 'Fido' } });
 
     const submitButton = screen.getByRole('button', { name: /Crear cuenta/i });
     fireEvent.click(submitButton);
 
-    // Espera a que se resuelva la promesa de fetch (gracias al mock global simple)
-    // y verifica que fetch fue llamado
-    await screen.findByText(/¡Registro exitoso!/i); // Espera el mensaje de éxito
+    await screen.findByText(/¡Registro exitoso!/i);
     expect(global.fetch).toHaveBeenCalledTimes(1);
     expect(global.fetch).toHaveBeenCalledWith(
-      'http://localhost:3001/api/register', // Verifica la URL
-      expect.objectContaining({ // Verifica que sea un POST con el body correcto (simplificado)
+      'http://localhost:3001/api/register',
+      expect.objectContaining({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -118,3 +101,70 @@ describe('Register Component', () => {
   });
 
 });
+
+  test('muestra error si las contraseñas no coinciden', async () => {
+    render(
+      <BrowserRouter>
+        <Register />
+      </BrowserRouter>
+    );
+
+    fireEvent.change(screen.getByPlaceholderText('Nombre completo'), { target: { value: 'Test User' } });
+    fireEvent.change(screen.getByPlaceholderText('Nombre de usuario'), { target: { value: 'testuser' } });
+    fireEvent.change(screen.getByPlaceholderText('Correo electrónico'), { target: { value: 'test@example.com' } });
+    fireEvent.change(screen.getByPlaceholderText('Contraseña (mín. 6 caracteres)'), { target: { value: 'password123' } });
+    fireEvent.change(screen.getByPlaceholderText('Confirmar contraseña'), { target: { value: 'differentPassword' } });
+    fireEvent.change(screen.getByPlaceholderText('Pregunta de seguridad (ej: nombre de mascota)'), { target: { value: 'Pet name?' } });
+    fireEvent.change(screen.getByPlaceholderText('Respuesta de seguridad'), { target: { value: 'Fido' } });
+
+    fireEvent.click(screen.getByRole('button', { name: /Crear cuenta/i }));
+
+    expect(await screen.findByText(/Las contraseñas no coinciden/i)).toBeInTheDocument();
+  });
+
+  test('muestra error si la contraseña es demasiado corta', async () => {
+    render(
+      <BrowserRouter>
+        <Register />
+      </BrowserRouter>
+    );
+
+    fireEvent.change(screen.getByPlaceholderText('Nombre completo'), { target: { value: 'Test User' } });
+    fireEvent.change(screen.getByPlaceholderText('Nombre de usuario'), { target: { value: 'testuser' } });
+    fireEvent.change(screen.getByPlaceholderText('Correo electrónico'), { target: { value: 'test@example.com' } });
+    fireEvent.change(screen.getByPlaceholderText('Contraseña (mín. 6 caracteres)'), { target: { value: '123' } });
+    fireEvent.change(screen.getByPlaceholderText('Confirmar contraseña'), { target: { value: '123' } });
+    fireEvent.change(screen.getByPlaceholderText('Pregunta de seguridad (ej: nombre de mascota)'), { target: { value: 'Pet name?' } });
+    fireEvent.change(screen.getByPlaceholderText('Respuesta de seguridad'), { target: { value: 'Fido' } });
+
+    fireEvent.click(screen.getByRole('button', { name: /Crear cuenta/i }));
+
+    expect(await screen.findByText(/La contraseña debe tener al menos 6 caracteres/i)).toBeInTheDocument();
+  });
+
+  test('muestra mensaje de error en fallo del servidor', async () => {
+    global.fetch.mockImplementationOnce(() =>
+      Promise.resolve({
+        ok: false,
+        json: () => Promise.resolve({ message: 'Error del servidor' }),
+      })
+    );
+
+    render(
+      <BrowserRouter>
+        <Register />
+      </BrowserRouter>
+    );
+
+    fireEvent.change(screen.getByPlaceholderText('Nombre completo'), { target: { value: 'Test User' } });
+    fireEvent.change(screen.getByPlaceholderText('Nombre de usuario'), { target: { value: 'testuser' } });
+    fireEvent.change(screen.getByPlaceholderText('Correo electrónico'), { target: { value: 'test@example.com' } });
+    fireEvent.change(screen.getByPlaceholderText('Contraseña (mín. 6 caracteres)'), { target: { value: 'password123' } });
+    fireEvent.change(screen.getByPlaceholderText('Confirmar contraseña'), { target: { value: 'password123' } });
+    fireEvent.change(screen.getByPlaceholderText('Pregunta de seguridad (ej: nombre de mascota)'), { target: { value: 'Pet name?' } });
+    fireEvent.change(screen.getByPlaceholderText('Respuesta de seguridad'), { target: { value: 'Fido' } });
+
+    fireEvent.click(screen.getByRole('button', { name: /Crear cuenta/i }));
+
+    expect(await screen.findByText(/Error del servidor/i)).toBeInTheDocument();
+  });

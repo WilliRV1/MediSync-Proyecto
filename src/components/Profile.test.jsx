@@ -176,3 +176,103 @@ describe('Profile Component Functional Tests', () => {
     });
   });
 });
+
+it('debe mostrar mensaje de error si falla la carga del perfil', async () => {
+  global.fetch.mockResolvedValueOnce({
+    ok: false,
+    status: 500,
+    json: () => Promise.resolve({ message: 'Error del servidor' }),
+  });
+
+  render(
+    <BrowserRouter>
+      <Profile />
+    </BrowserRouter>
+  );
+
+  await waitFor(() => {
+    expect(screen.getByText(/Error al cargar perfil/i)).toBeInTheDocument();
+  });
+});
+
+it('debe mostrar mensaje de error si falla la actualización del perfil', async () => {
+  global.fetch.mockResolvedValueOnce({
+    ok: true,
+    json: () => Promise.resolve({ success: true, user: mockUserData }),
+  });
+
+  render(
+    <BrowserRouter>
+      <Profile />
+    </BrowserRouter>
+  );
+
+  await screen.findByText(mockUserData.nombre);
+  fireEvent.click(screen.getByRole('button', { name: /Editar Perfil/i }));
+
+  global.fetch.mockResolvedValueOnce({
+    ok: false,
+    status: 500,
+    json: () => Promise.resolve({ message: 'Error al actualizar' }),
+  });
+
+  fireEvent.click(screen.getByRole('button', { name: /Guardar Cambios/i }));
+
+  await waitFor(() => {
+    expect(screen.getByText(/Error al actualizar/i)).toBeInTheDocument();
+  });
+});
+
+it('debe mostrar mensaje de error si falla el logout', async () => {
+  global.fetch.mockResolvedValueOnce({
+    ok: true,
+    json: () => Promise.resolve({ success: true, user: mockUserData }),
+  });
+
+  render(
+    <BrowserRouter>
+      <Profile />
+    </BrowserRouter>
+  );
+
+  await screen.findByText(mockUserData.nombre);
+
+  global.fetch.mockResolvedValueOnce({
+    ok: false,
+    status: 500,
+    json: () => Promise.resolve({ message: 'Error al cerrar sesión' }),
+  });
+
+  fireEvent.click(screen.getByRole('button', { name: /Cerrar Sesión/i }));
+
+  await waitFor(() => {
+    expect(screen.getByText(/Error al cerrar sesión/i)).toBeInTheDocument();
+  });
+});
+
+it('debe mostrar mensaje de error si falla la eliminación de cuenta', async () => {
+  global.fetch.mockResolvedValueOnce({
+    ok: true,
+    json: () => Promise.resolve({ success: true, user: mockUserData }),
+  });
+
+  render(
+    <BrowserRouter>
+      <Profile />
+    </BrowserRouter>
+  );
+
+  await screen.findByText(mockUserData.nombre);
+
+  global.fetch.mockResolvedValueOnce({
+    ok: false,
+    status: 500,
+    json: () => Promise.resolve({ message: 'Error al eliminar' }),
+  });
+
+  fireEvent.click(screen.getByRole('button', { name: /Eliminar Cuenta/i }));
+
+  await waitFor(() => {
+    expect(screen.getByText(/Error al eliminar/i)).toBeInTheDocument();
+  });
+});

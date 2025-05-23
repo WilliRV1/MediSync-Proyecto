@@ -149,3 +149,121 @@ describe('Flujo completo de ForgotPassword', () => {
     });
   });
 });
+
+test('muestra mensaje de error si las contraseñas no coinciden', async () => {
+  global.fetch
+    .mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ success: true, credentialId: '123' }),
+    })
+    .mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ success: true, question: '¿Tu color favorito?' }),
+    })
+    .mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ success: true }),
+    });
+
+  render(
+    <MemoryRouter>
+      <ForgotPassword />
+    </MemoryRouter>
+  );
+
+  fireEvent.change(screen.getByPlaceholderText('Correo electrónico o nombre de usuario'), {
+    target: { value: 'test@correo.com' },
+  });
+  fireEvent.click(screen.getByRole('button', { name: /continuar/i }));
+
+  await screen.findByText(/¿tu color favorito\?/i);
+  fireEvent.change(screen.getByPlaceholderText('Tu respuesta secreta'), {
+    target: { value: 'Azul' },
+  });
+  fireEvent.click(screen.getByRole('button', { name: /verificar respuesta/i }));
+
+  await screen.findByPlaceholderText('Nueva contraseña (mín. 6 caracteres)');
+
+  fireEvent.change(screen.getByPlaceholderText('Nueva contraseña (mín. 6 caracteres)'), {
+    target: { value: 'pass1' },
+  });
+  fireEvent.change(screen.getByPlaceholderText('Confirmar nueva contraseña'), {
+    target: { value: 'pass2' },
+  });
+  fireEvent.click(screen.getByRole('button', { name: /actualizar contraseña/i }));
+
+  expect(screen.getByText(/no coinciden/i)).toBeInTheDocument();
+});
+
+test('muestra error si la nueva contraseña es muy corta', async () => {
+  global.fetch
+    .mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ success: true, credentialId: '123' }),
+    })
+    .mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ success: true, question: '¿Tu color favorito?' }),
+    })
+    .mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ success: true }),
+    });
+
+  render(
+    <MemoryRouter>
+      <ForgotPassword />
+    </MemoryRouter>
+  );
+
+  fireEvent.change(screen.getByPlaceholderText('Correo electrónico o nombre de usuario'), {
+    target: { value: 'test@correo.com' },
+  });
+  fireEvent.click(screen.getByRole('button', { name: /continuar/i }));
+
+  await screen.findByText(/¿tu color favorito\?/i);
+  fireEvent.change(screen.getByPlaceholderText('Tu respuesta secreta'), {
+    target: { value: 'Azul' },
+  });
+  fireEvent.click(screen.getByRole('button', { name: /verificar respuesta/i }));
+
+  await screen.findByPlaceholderText('Nueva contraseña (mín. 6 caracteres)');
+
+  fireEvent.change(screen.getByPlaceholderText('Nueva contraseña (mín. 6 caracteres)'), {
+    target: { value: '123' },
+  });
+  fireEvent.change(screen.getByPlaceholderText('Confirmar nueva contraseña'), {
+    target: { value: '123' },
+  });
+  fireEvent.click(screen.getByRole('button', { name: /actualizar contraseña/i }));
+
+  expect(screen.getByText(/al menos 6 caracteres/i)).toBeInTheDocument();
+});
+
+test('permite volver al paso 1 desde el paso 2', async () => {
+  global.fetch
+    .mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ success: true, credentialId: '123' }),
+    })
+    .mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ success: true, question: '¿Tu color favorito?' }),
+    });
+
+  render(
+    <MemoryRouter>
+      <ForgotPassword />
+    </MemoryRouter>
+  );
+
+  fireEvent.change(screen.getByPlaceholderText('Correo electrónico o nombre de usuario'), {
+    target: { value: 'test@correo.com' },
+  });
+  fireEvent.click(screen.getByRole('button', { name: /continuar/i }));
+
+  await screen.findByText(/¿tu color favorito\?/i);
+
+  fireEvent.click(screen.getByRole('button', { name: /volver/i }));
+  expect(screen.getByPlaceholderText('Correo electrónico o nombre de usuario')).toBeInTheDocument();
+});
